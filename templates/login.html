@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ProjectHUB</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card glass-morphism">
+            <!-- Animated Background -->
+            <div class="auth-bg-animation"></div>
+            <div class="auth-sphere-1"></div>
+            <div class="auth-sphere-2"></div>
+
+            <div class="auth-content">
+                <div class="auth-header">
+                    <h1 class="auth-title">
+                        <span class="auth-icon">🔐</span>
+                        Welcome Back
+                    </h1>
+                    <p class="auth-subtitle">Sign in to your account</p>
+                </div>
+
+                {% if error %}
+                    <div class="error-message">
+                        <p>{{ error }}</p>
+                    </div>
+                {% endif %}
+
+                <form method="post" class="auth-form">
+                    {% csrf_token %}
+
+                    <!-- Username -->
+                    <div class="form-group">
+                        <label for="username" class="form-label">Username</label>
+                        <input 
+                            type="text" 
+                            name="username" 
+                            id="username" 
+                            class="form-input" 
+                            placeholder="Enter your username"
+                            required
+                        >
+                    </div>
+
+                    <!-- Password -->
+                    <div class="form-group">
+                        <label for="password" class="form-label">Password</label>
+                        <input 
+                            type="password" 
+                            name="password" 
+                            id="password" 
+                            class="form-input" 
+                            placeholder="Enter your password"
+                            required
+                        >
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <span>Sign In</span>
+                        <span class="btn-icon">→</span>
+                    </button>
+                </form>
+
+                <!-- Register Link -->
+                <div class="auth-footer">
+                    <p>Don't have an account? <a href="{% url 'register' %}" class="auth-link">Register here</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SVG Illustration -->
+        <div class="auth-illustration">
+            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#06B6D4;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <rect x="40" y="40" width="120" height="120" rx="20" fill="url(#grad2)" opacity="0.2"/>
+                <circle cx="70" cy="70" r="15" fill="#3B82F6" opacity="0.6"/>
+                <circle cx="130" cy="130" r="15" fill="#06B6D4" opacity="0.6"/>
+            </svg>
+        </div>
+    </div>
+</body>
+</html>

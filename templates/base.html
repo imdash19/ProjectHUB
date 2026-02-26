@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ProjectHUB{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="shortcut icon" href="{% static 'favicon.png' %}" type="image/x-icon">
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">
+                <h1 class="logo">
+                    <span class="logo-icon">⚡</span>
+                    ProjectHUB
+                </h1>
+            </div>
+            
+            <div class="navbar-menu">
+                <a href="{% url 'dashboard' %}" class="nav-link">
+                    <span class="icon">📊</span> Dashboard
+                </a>
+                <a href="{% url 'add_project' %}" class="nav-link nav-link-highlight">
+                    <span class="icon">➕</span> New Project
+                </a>
+                <div class="nav-user">
+                    <span class="user-badge">👤 {{ user.username }}</span>
+                    <a href="{% url 'logout' %}" class="nav-link logout">
+                        <span class="icon">🚪</span> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>© 2026 ProjectHUB. Manage your projects with ease.</p>
+            <p class="footer-links">
+                <a href="https://github.com">GitHub</a> • 
+                <a href="https://docs.djangoproject.com">Django Docs</a> • 
+                <a href="https://www.django-rest-framework.org/">DRF Docs</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

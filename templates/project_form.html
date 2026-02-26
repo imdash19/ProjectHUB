@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ action }} Project - ProjectHUB{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-card card glass-morphism">
+        <div style="margin-bottom: var(--spacing-2xl);">
+            <h1 class="page-title">{{ action }} Project</h1>
+            <p class="page-subtitle">Add or update your project details</p>
+        </div>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <!-- Project Name -->
+            <div class="form-group">
+                <label for="id_name" class="form-label">Project Name *</label>
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="form-error">{{ form.name.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="id_description" class="form-label">Description *</label>
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="form-error">{{ form.description.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="form-group">
+                <label class="form-label">🔧 Technology Stack (Click to Select)</label>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: var(--spacing-md);">
+                    Select all technologies used in your project
+                </p>
+                <div class="tech-stack-selector">
+                    {% for tech in tech_stacks %}
+                        <div class="checkbox-wrapper">
+                            <input 
+                                type="checkbox" 
+                                id="tech_{{ tech.id }}" 
+                                name="tech_stack" 
+                                value="{{ tech.id }}"
+                                {% if tech in selected_tech %}checked{% endif %}
+                                class="tech-checkbox"
+                            >
+                            <label for="tech_{{ tech.id }}" class="checkbox-label tech-label">
+                                <div class="tech-logo-container">
+                                    {% if tech.logo_url %}
+                                        <img src="{{ tech.logo_url }}" alt="{{ tech.name }}" class="tech-logo" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                        <span class="tech-fallback" style="display: none; font-size: 1.5rem;">⚙️</span>
+                                    {% else %}
+                                        <span class="tech-fallback" style="font-size: 1.5rem;">⚙️</span>
+                                    {% endif %}
+                                </div>
+                                <span class="tech-name">{{ tech.name }}</span>
+                            </label>
+                        </div>
+                    {% empty %}
+                        <div style="grid-column: 1 / -1; padding: var(--spacing-lg); text-align: center; background: rgba(239, 68, 68, 0.1); border-radius: var(--radius-md);">
+                            <p style="color: var(--text-secondary); margin: 0;">
+                                ⚠️ No tech stacks available. Please load tech stacks from admin panel first.
+                            </p>
+                            <p style="font-size: 0.85rem; color: var(--text-light); margin-top: var(--spacing-sm);">
+                                Go to /admin/ and add technologies.
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- GitHub Link -->
+            <div class="form-group">
+                <label for="id_github_link" class="form-label">GitHub Link (Optional)</label>
+                {{ form.github_link }}
+                {% if form.github_link.errors %}
+                    <div class="form-error">{{ form.github_link.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Live Link -->
+            <div class="form-group">
+                <label for="id_live_link" class="form-label">Live Project URL (Optional)</label>
+                {{ form.live_link }}
+                {% if form.live_link.errors %}
+                    <div class="form-error">{{ form.live_link.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Form Errors -->
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+                <button type="submit" class="btn btn-primary">
+                    {% if action == 'Add' %}
+                        ➕ Create Project
+                    {% else %}
+                        💾 Update Project
+                    {% endif %}
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="text-align: center;">
+                    ← Back to Dashboard
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

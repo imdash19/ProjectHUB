@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Token Generated - ProjectHUB{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-card card glass-morphism">
+        <!-- Success Header -->
+        <div style="text-align: center; margin-bottom: var(--spacing-2xl);">
+            <div style="font-size: 3rem; margin-bottom: var(--spacing-lg);">✅</div>
+            <h1 class="page-title">Token Generated Successfully!</h1>
+            <p class="page-subtitle">Your API token is ready to use</p>
+        </div>
+
+        <!-- Token Display -->
+        <div class="token-box" style="margin-bottom: var(--spacing-lg);">
+            <div class="token-label">🎟️ Your API Token</div>
+            <div class="token-container">
+                <code class="token-value">{{ api_token.token }}</code>
+                <button type="button" class="btn-copy" onclick="copyToClipboard('{{ api_token.token }}')">
+                    📋 Copy
+                </button>
+            </div>
+        </div>
+
+        <!-- API Endpoint -->
+        <div class="api-endpoint-box" style="margin-bottom: var(--spacing-lg);">
+            <div class="endpoint-label">🔗 API Endpoint</div>
+            <div class="endpoint-url-container">
+                <code class="endpoint-url">GET /api/user/{{ request.user.id }}/projects/</code>
+                <button type="button" class="btn-copy" onclick="copyToClipboard('GET /api/user/{{ request.user.id }}/projects/')">
+                    📋 Copy
+                </button>
+            </div>
+        </div>
+
+        <!-- Usage Example -->
+        <div style="background: var(--bg-darker); color: white; padding: var(--spacing-lg); border-radius: var(--radius-lg); margin-bottom: var(--spacing-lg); overflow-x: auto;">
+            <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: var(--spacing-sm);">💻 Example cURL Request:</p>
+            <code style="color: #10b981; font-family: 'Courier New', monospace;">curl -X GET "http://localhost:8000/api/user/{{ request.user.id }}/projects/" \<br>
+&nbsp;&nbsp;-H "Authorization: Bearer {{ api_token.token }}"</code>
+        </div>
+
+        <!-- Token Info -->
+        <div class="token-info" style="margin-bottom: var(--spacing-lg);">
+            <div class="info-row">
+                <span class="info-label">Created At:</span>
+                <span class="info-value">{{ api_token.created_at|date:"M d, Y H:i:s" }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Status:</span>
+                <span class="info-value" style="color: var(--success);">✅ Active</span>
+            </div>
+        </div>
+
+        <!-- Important Notes -->
+        <div style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--danger); padding: var(--spacing-lg); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
+            <h4 style="color: var(--danger); margin-bottom: var(--spacing-sm);">⚠️ Important</h4>
+            <ul style="color: var(--text-secondary); padding-left: var(--spacing-lg);">
+                <li><strong>Keep your token secret!</strong> Don't share it publicly</li>
+                <li>If compromised, regenerate it immediately</li>
+                <li>Store it securely (use environment variables, not in code)</li>
+                <li>You can regenerate your token anytime from your dashboard</li>
+            </ul>
+        </div>
+
+        <!-- Help Section -->
+        <div style="background: rgba(59, 130, 246, 0.1); border-left: 4px solid #3B82F6; padding: var(--spacing-lg); border-radius: var(--radius-md); margin-bottom: var(--spacing-lg);">
+            <h4 style="color: var(--primary); margin-bottom: var(--spacing-sm);">ℹ️ How to Use Your Token</h4>
+            <ol style="color: var(--text-secondary); padding-left: var(--spacing-lg);">
+                <li>Include the token in the Authorization header of your API requests</li>
+                <li>Use the format: <code>Bearer YOUR_TOKEN</code></li>
+                <li>The API will return all your projects in JSON format</li>
+                <li>No other authentication is needed</li>
+            </ol>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+            <a href="{% url 'dashboard' %}" class="btn btn-primary" style="text-align: center;">
+                ← Back to Dashboard
+            </a>
+            <a href="{% url 'api_health' %}" class="btn btn-secondary" target="_blank" style="text-align: center;">
+                🧪 Test API Endpoint
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Copied to clipboard!');
+    }).catch(err => {
+        console.error('Failed to copy:', err);
+    });
+}
+</script>
+{% endblock %}

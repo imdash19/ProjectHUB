@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - ProjectHUB{% endblock %}
+
+{% block content %}
+<div class="container">
+
+    <div class="page-header">
+        <div class="header-content">
+            <h1 class="page-title">📊 Dashboard</h1>
+            <p class="page-subtitle">
+                Welcome back, <strong>{{ user.first_name|default:user.username }}</strong>!
+            </p>
+        </div>
+
+        <div class="header-stats">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_projects }}</div>
+                <div class="stat-label">Projects</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= API SECTION ================= -->
+    <section class="api-section card glass-morphism">
+
+        <div class="section-header">
+            <h2 class="section-title">
+                🌐 Public Portfolio APIs
+            </h2>
+            <p class="section-description">
+                Share your projects with anyone — completely public.
+            </p>
+        </div>
+
+        <!-- ================= USERNAME API ================= -->
+        <div class="api-subsection">
+
+            <h3>🔓 API by Username</h3>
+
+            <div class="api-endpoint-box">
+                <code>
+                    GET {% url 'api_projects_by_username' user.username %}
+                </code>
+            </div>
+
+            <div class="share-box">
+                <code id="usernameApi">
+                    {{ request.scheme }}://{{ request.get_host }}{% url 'api_projects_by_username' user.username %}
+                </code>
+
+                <button onclick="copyToClipboard(document.getElementById('usernameApi').textContent)">
+                    📋 Copy Full URL
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ================= USER ID API ================= -->
+        <div class="api-subsection" style="margin-top: 2rem;">
+
+            <h3>🔓 API by User ID</h3>
+
+            <div class="api-endpoint-box">
+                <code>
+                    GET {% url 'api_user_projects' user.id %}
+                </code>
+            </div>
+
+            <div class="share-box">
+                <code id="userIdApi">
+                    {{ request.scheme }}://{{ request.get_host }}{% url 'api_user_projects' user.id %}
+                </code>
+
+                <button onclick="copyToClipboard(document.getElementById('userIdApi').textContent)">
+                    📋 Copy Full URL
+                </button>
+            </div>
+
+        </div>
+
+        <!-- ================= HEALTH CHECK ================= -->
+        <div class="api-subsection" style="margin-top: 2rem;">
+            <h3>💚 Health Check</h3>
+            <div class="api-endpoint-box">
+                <code>
+                    {{ request.scheme }}://{{ request.get_host }}{% url 'api_health' %}
+                </code>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ================= PROJECTS SECTION ================= -->
+    <section class="projects-section" style="margin-top: 3rem;">
+
+        <h2>📁 Your Projects</h2>
+
+        {% if projects %}
+            <div class="projects-grid">
+
+                {% for project in projects %}
+                    <div class="project-card">
+                        <h3>{{ project.name }}</h3>
+                        <p>{{ project.description }}</p>
+
+                        <div class="project-actions">
+                            <a href="{% url 'edit_project' project.id %}">✏ Edit</a>
+
+                            <form method="post"
+                                  action="{% url 'delete_project' project.id %}"
+                                  style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        onclick="return confirm('Are you sure?');">
+                                    🗑 Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+
+            </div>
+        {% else %}
+            <p>No projects yet.</p>
+        {% endif %}
+
+    </section>
+
+</div>
+
+<script>
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text)
+        .then(() => alert("Copied to clipboard!"))
+        .catch(err => console.error(err));
+}
+</script>
+
+{% endblock %}

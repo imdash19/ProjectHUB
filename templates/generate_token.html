@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Generate API Token - ProjectHUB{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="form-card card glass-morphism">
+        <div style="margin-bottom: var(--spacing-2xl);">
+            <h1 class="page-title">🔐 Generate API Token</h1>
+            <p class="page-subtitle">Verify your identity to generate a secure API token</p>
+        </div>
+
+        {% if api_token %}
+            <div class="api-status active" style="margin-bottom: var(--spacing-lg);">
+                <div class="status-indicator"></div>
+                <div class="status-content">
+                    <h3 class="status-title">✅ You Already Have an Active Token</h3>
+                    <p class="status-message">Submit the form below to regenerate your token</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <!-- Username -->
+            <div class="form-group">
+                <label for="id_username" class="form-label">Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <div class="form-error">{{ form.username.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Password -->
+            <div class="form-group">
+                <label for="id_password" class="form-label">Password</label>
+                {{ form.password }}
+                {% if form.password.errors %}
+                    <div class="form-error">{{ form.password.errors.0 }}</div>
+                {% endif %}
+            </div>
+
+            <!-- Form Errors -->
+            {% if form.non_field_errors %}
+                <div class="error-message">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Action Buttons -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--spacing-lg);">
+                <button type="submit" class="btn btn-primary">
+                    🔑 {% if api_token %}Regenerate{% else %}Generate{% endif %} Token
+                </button>
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary" style="text-align: center;">
+                    ← Back to Dashboard
+                </a>
+            </div>
+        </form>
+
+        <!-- Info Box -->
+        <div style="margin-top: var(--spacing-2xl); padding: var(--spacing-lg); background: rgba(59, 130, 246, 0.1); border-radius: var(--radius-lg); border-left: 4px solid #3B82F6;">
+            <h4 style="color: var(--primary); margin-bottom: var(--spacing-sm);">ℹ️ About Your API Token</h4>
+            <ul style="color: var(--text-secondary); padding-left: var(--spacing-lg);">
+                <li>Your token is unique and should be kept secret</li>
+                <li>Use it in the Authorization header: <code>Bearer YOUR_TOKEN</code></li>
+                <li>You can regenerate it anytime, but the old token will stop working</li>
+                <li>The API endpoint is: <code>GET /api/user/{{ user.id }}/projects/</code></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
